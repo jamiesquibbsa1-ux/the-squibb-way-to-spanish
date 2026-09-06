@@ -1,4 +1,4 @@
 window.SQUIBB_CLOUD_CONFIG={
-  url:"__SUPABASE_URL__",
-  anon:"__SUPABASE_ANON_KEY__"
+  url:"https://lqeixpdlywavihlqsoct.supabase.co",
+  anon:"sb_publishable_v1wiatQE8FYtgIcnE7iueA_7xUgKmid"
 };
