@@ -1,0 +1,53 @@
+<section id="league" class="hidden">
+  <div class="card league-hero">
+    <div class="row">
+      <div><div class="small">SQUIBB LEAGUE</div><h2 class="title">See everyone's Spanish progress</h2></div>
+      <span class="pill"><span class="sync-dot" id="cloudDot"></span><span id="cloudStatus">Connecting</span></span>
+    </div>
+    <p class="subtitle">Create a private league or join one with a code. Points, streaks, course progress, stars, goals and match wins sync automatically.</p>
+    <button class="btn secondary" id="refreshLeague" style="width:100%">↻ Refresh standings</button>
+  </div>
+
+  <div id="leagueSetup">
+    <div class="card">
+      <div class="row"><h2 class="title">Create a league</h2><span class="pill">Captain</span></div>
+      <p class="small muted">Create a group for family or friends. You will get a code to send with the APK.</p>
+      <div class="grid2"><input id="newLeagueName" maxlength="40" placeholder="e.g. Squibb Family League"><button class="btn primary" id="createLeagueBtn">Create league</button></div>
+      <div class="feedback" id="createLeagueFeedback"></div>
+    </div>
+    <div class="card">
+      <div class="row"><h2 class="title">Join a league</h2><span class="pill">Invite code</span></div>
+      <p class="small muted">Enter the SQUIBB code someone sent you.</p>
+      <div class="grid2"><input id="joinLeagueCode" maxlength="20" placeholder="SQUIBB-XXXXXX" style="text-transform:uppercase"><button class="btn primary" id="joinLeagueBtn">Join league</button></div>
+      <div class="feedback" id="joinLeagueFeedback"></div>
+    </div>
+  </div>
+
+  <div id="leagueDashboard" class="hidden">
+    <div class="card">
+      <div class="row">
+        <div><div class="small muted">CURRENT LEAGUE</div><h2 class="title" id="activeLeagueName">Squibb League</h2></div>
+        <select id="leagueSelector" style="width:auto;min-width:150px"></select>
+      </div>
+      <div class="small muted" style="margin-top:12px;text-align:center">Invite code</div>
+      <div class="league-code" id="activeInviteCode">SQUIBB-XXXXXX</div>
+      <div class="grid2" style="margin-top:9px"><button class="btn primary" id="shareLeagueCode">📤 Share invite</button><button class="btn secondary" id="copyLeagueCode">📋 Copy code</button></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 class="title">League table</h2><span class="pill" id="leaguePlayerCount">0 players</span></div>
+      <div style="overflow-x:auto"><table class="league-table"><thead><tr><th>#</th><th>Player</th><th>Week</th><th>Course</th><th>🔥</th><th>⭐</th><th>Pts</th></tr></thead><tbody id="sharedLeagueBody"></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 class="title">Team activity</h2><span class="pill">Latest</span></div>
+      <div class="activity-list" id="leagueActivity"></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 class="title">Join another league</h2><span class="pill">Multiple groups</span></div>
+      <div class="grid2"><input id="joinAnotherCode" maxlength="20" placeholder="SQUIBB-XXXXXX" style="text-transform:uppercase"><button class="btn secondary" id="joinAnotherBtn">Join another</button></div>
+      <div class="feedback" id="joinAnotherFeedback"></div>
+    </div>
+  </div>
+</section>
