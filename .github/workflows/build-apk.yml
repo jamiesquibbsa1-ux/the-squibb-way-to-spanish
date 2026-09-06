@@ -3,7 +3,7 @@ name: Build Squibb Spanish APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
 
 permissions:
   contents: read
@@ -11,20 +11,20 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Reconstruct complete Android project
+      - name: Rebuild full Squibb app asset
         shell: bash
         run: |
           set -euo pipefail
-          base64 -d build_inputs/squibb_payload.b64 > /tmp/squibb-payload.zip
-          unzip -o /tmp/squibb-payload.zip -d .
-          test -f app/src/main/assets/index.html
-          test -f app/src/main/res/drawable-nodpi/squibb_crest.webp
-          test -f app/src/main/java/com/squibbway/spanish/MainActivity.java
+          cat app/src/main/assets/index.part*.b64 > /tmp/index.b64
+          base64 -d /tmp/index.b64 > /tmp/index.html.gz
+          gzip -dc /tmp/index.html.gz > app/src/main/assets/index.html
+          rm app/src/main/assets/index.part*.b64
+          test -s app/src/main/assets/index.html
+          grep -q "The Squibb Way to Spanish" app/src/main/assets/index.html
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
@@ -41,7 +41,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.10.2'
+          gradle-version: '8.9'
 
       - name: Build installable APK
         run: gradle :app:assembleDebug --stacktrace
