@@ -1,0 +1,9 @@
+/* Shared Squibb League */
+.nav{grid-template-columns:repeat(6,1fr)!important}
+.league-hero{background:linear-gradient(135deg,#c50020,#5b000f);border-color:#ef3650}
+.league-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.league-code{font-size:25px;font-weight:950;letter-spacing:.08em;text-align:center;padding:15px;border:1px dashed #777;border-radius:15px;background:#0e0f13}
+.sync-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#777}.sync-dot.online{background:#21a75a}.sync-dot.syncing{background:#f1c84a}.sync-dot.error{background:#ff3150}
+.league-table{width:100%;border-collapse:collapse;margin-top:10px}.league-table th,.league-table td{padding:10px 6px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}.league-table tr.me{background:rgba(197,0,32,.17);font-weight:900}.position-medal{font-size:18px}
+.activity-list{display:grid;gap:8px;margin-top:10px}.activity-item{border-left:3px solid var(--red-hi);background:#15161b;border-radius:0 12px 12px 0;padding:10px}.activity-time{font-size:10px;color:var(--muted);margin-top:4px}
+@media(max-width:690px){.league-grid{grid-template-columns:1fr}.nav button{font-size:10px}}
