@@ -41,6 +41,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setAllowFileAccess(true);
         s.setAllowContentAccess(true);
+        // The app shell is a trusted local asset, but the shared Squibb League
+        // must call the HTTPS Supabase backend. Without this Android blocks
+        // fetch/XHR from file:///android_asset to https:// and cloud sync fails.
+        s.setAllowUniversalAccessFromFileURLs(true);
+        s.setAllowFileAccessFromFileURLs(true);
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
 
@@ -89,9 +94,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             sendSpeechError("Speech recognition is not available on this phone.");
             return;
         }
-        if (recognizer != null) {
-            recognizer.destroy();
-        }
+        if (recognizer != null) recognizer.destroy();
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
         recognizer.setRecognitionListener(new RecognitionListener() {
             public void onReadyForSpeech(Bundle params) {}
@@ -101,11 +104,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             public void onEndOfSpeech() {}
             public void onEvent(int eventType, Bundle params) {}
             public void onPartialResults(Bundle partialResults) {}
-
-            public void onError(int error) {
-                sendSpeechError("Didn't catch that — tap to retry.");
-            }
-
+            public void onError(int error) { sendSpeechError("Didn't catch that — tap to retry."); }
             public void onResults(Bundle results) {
                 ArrayList<String> list = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String heard = (list != null && !list.isEmpty()) ? list.get(0) : "";
@@ -113,7 +112,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 webView.post(() -> webView.evaluateJavascript(js, null));
             }
         });
-
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES");
@@ -131,10 +129,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQ_AUDIO) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (pendingRecognition) {
-                    pendingRecognition = false;
-                    startRecognition();
-                }
+                if (pendingRecognition) { pendingRecognition = false; startRecognition(); }
             } else {
                 pendingRecognition = false;
                 sendSpeechError("Microphone permission is needed for automatic speaking practice.");
@@ -151,10 +146,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onDestroy() {
         if (recognizer != null) recognizer.destroy();
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
+        if (tts != null) { tts.stop(); tts.shutdown(); }
         if (webView != null) webView.destroy();
         super.onDestroy();
     }
