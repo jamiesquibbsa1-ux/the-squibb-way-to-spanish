@@ -26,6 +26,28 @@ jobs:
           test -s app/src/main/assets/index.html
           grep -q "The Squibb Way to Spanish" app/src/main/assets/index.html
 
+      - name: Build real Squibb crest launcher badge
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p app/src/main/res/drawable-nodpi
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64
+          p=Path('app/src/main/assets/index.html')
+          text=p.read_text(encoding='utf-8')
+          m=re.search(r'data:image/webp;base64,([^"\']+)', text)
+          if not m:
+              raise SystemExit('Real Squibb crest image not found in app')
+          raw=base64.b64decode(m.group(1))
+          out=Path('app/src/main/res/drawable-nodpi/squibb_crest_real.webp')
+          out.write_bytes(raw)
+          if len(raw) < 10000:
+              raise SystemExit('Extracted crest unexpectedly small')
+          print(f'Using real Squibb crest launcher icon: {len(raw)} bytes')
+          PY
+          test -s app/src/main/res/drawable-nodpi/squibb_crest_real.webp
+
       - name: Enable shared Squibb League
         run: |
           python tools/enable_shared_league.py
@@ -68,12 +90,12 @@ jobs:
 
       - name: Name shareable APK
         if: success()
-        run: cp app/build/outputs/apk/debug/app-debug.apk "The-Squibb-Way-to-Spanish.apk"
+        run: cp app/build/outputs/apk/debug/app-debug.apk "The-Squibb-Way-to-Spanish-FIXED.apk"
 
       - name: Upload APK artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: The-Squibb-Way-to-Spanish-APK
-          path: The-Squibb-Way-to-Spanish.apk
+          name: The-Squibb-Way-to-Spanish-FIXED-APK
+          path: The-Squibb-Way-to-Spanish-FIXED.apk
           if-no-files-found: error
