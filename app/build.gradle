@@ -3,11 +3,11 @@ android {
     namespace 'com.tinytales.prototype'
     compileSdk 35
     defaultConfig {
-        applicationId "com.tinytales.prototype"
+        applicationId "com.tinytales.prototype.maps"
         minSdk 23
         targetSdk 35
-        versionCode 2
-        versionName "0.2-school-pitch"
+        versionCode 3
+        versionName "0.3-maps-prototype"
     }
 }
 dependencies {}
