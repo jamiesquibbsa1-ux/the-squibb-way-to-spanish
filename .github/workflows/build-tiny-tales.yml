@@ -1,0 +1,61 @@
+name: Build Tiny Tales APK
+
+on:
+  push:
+    branches: [ "tiny-tales-prototype" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rebuild Tiny Tales app assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p app/src/main/assets app/src/main/res/drawable-nodpi
+          cat tiny_build/index.part*.b64 > /tmp/tiny-index.b64
+          base64 -d /tmp/tiny-index.b64 > /tmp/tiny-index.html.gz
+          gzip -dc /tmp/tiny-index.html.gz > app/src/main/assets/index.html
+          base64 -d tiny_build/logo.b64 > /tmp/tiny-logo.webp
+          cp /tmp/tiny-logo.webp app/src/main/assets/tiny_tales_logo.webp
+          cp /tmp/tiny-logo.webp app/src/main/res/drawable-nodpi/tiny_tales_logo.webp
+          test -s app/src/main/assets/index.html
+          test -s app/src/main/res/drawable-nodpi/tiny_tales_logo.webp
+          grep -q "Places for kids, reviewed by kids" app/src/main/assets/index.html
+          grep -q "Tell your Tiny Tale" app/src/main/assets/index.html
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build Tiny Tales
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: Name APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Tiny-Tales-School-Prototype.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tiny-Tales-School-Prototype-APK
+          path: Tiny-Tales-School-Prototype.apk
+          if-no-files-found: error
